@@ -13,87 +13,113 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background: linear-gradient(to bottom, #87CEEB, #90EE90);
             text-align: center;
             transition: background-color 0.3s;
         }
         h1 {
-            font-size: 2.5em;
-            color: #333;
+            font-size: 2.8em;
+            color: #ff4500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         #problem {
             font-size: 2em;
             color: #0066cc;
             margin: 20px;
             padding: 20px;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #wordBank {
+            font-size: 1.2em;
+            color: #444;
+            margin: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+        #wordBank .causes::before {
+            content: "❓ Causes: ";
+            color: #ff69b4;
+        }
+        #wordBank .effects::before {
+            content: "➡️ Effects: ";
+            color: #20b2aa;
         }
         #timer {
             font-size: 1.5em;
             color: #cc0000;
             margin: 10px;
+            font-weight: bold;
         }
         #explosion {
             font-size: 3em;
             color: #ff0000;
             display: none;
             margin: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         button {
             font-size: 1.2em;
-            padding: 10px 20px;
-            background-color: #28a745;
+            padding: 12px 24px;
+            background-color: #32cd32;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             margin: 10px;
+            transition: background-color 0.2s;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #228b22;
         }
         #instructions {
-            font-size: 1.2em;
-            color: #333;
+            font-size: 1.3em;
+            color: #800080;
             margin: 20px;
+            font-weight: bold;
         }
         .explosion-effect {
-            background-color: #ff3333 !important;
+            background: linear-gradient(to bottom, #ff3333, #ff6666) !important;
         }
     </style>
 </head>
 <body>
-    <h1>Problem-Cause-Effect Game</h1>
+    <h1>🎲 Problem-Cause-Effect Game 🎲</h1>
     <div id="instructions">
-        Write a cause and effect for the problem before the timer hits 0 or BOOM! 💣
+        🎯 Write a cause and effect for the problem before the timer hits 0 or BOOM! 💣
     </div>
-    <div id="problem">Click "New Problem" to start!</div>
-    <div id="timer">Time: 60</div>
-    <div id="explosion">BOOM! Time’s Up! 💣<br><button onclick="dismissExplosion()">Continue</button></div>
-    <button onclick="startGame()">New Problem</button>
-    <audio id="boomSound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_6b7a4e6e3f.mp3" preload="auto"></audio>
+    <div id="problem">Click "New Problem" to start! 🚀</div>
+    <div id="wordBank"></div>
+    <div id="timer">Time: 60 ⏰</div>
+    <div id="explosion">BOOM! Time’s Up! 💣💥<br><button id="continueButton">Continue ➡️</button></div>
+    <button id="startButton">New Problem 🚀</button>
+    <audio id="boomSound" src="./boom.mp3" preload="auto"></audio>
 
     <script>
         const problems = [
-            "My problem is I'm hungry.",
-            "My problem is I'm late for school.",
-            "My problem is my pencil is broken.",
-            "My problem is my room is messy.",
-            "My problem is I lost my book.",
-            "My problem is I'm tired.",
-            "My problem is my bag is heavy.",
-            "My problem is my phone is dead.",
-            "My problem is I forgot my homework.",
-            "My problem is my shoes are wet.",
-            "My problem is I’m cold.",
-            "My problem is my friend is sad."
+            { text: "My problem is I'm hungry.", emoji: "🍽️" },
+            { text: "My problem is I'm late for school.", emoji: "🏫" },
+            { text: "My problem is my pencil is broken.", emoji: "✏️" },
+            { text: "My problem is my room is messy.", emoji: "🧹" },
+            { text: "My problem is I lost my book.", emoji: "📚" },
+            { text: "My problem is I'm tired.", emoji: "😴" },
+            { text: "My problem is my bag is heavy.", emoji: "🎒" },
+            { text: "My problem is my phone is dead.", emoji: "📱" },
+            { text: "My problem is I forgot my homework.", emoji: "📝" },
+            { text: "My problem is my shoes are wet.", emoji: "👟" },
+            { text: "My problem is I’m cold.", emoji: "🥶" },
+            { text: "My problem is my friend is sad.", emoji: "😢" }
         ];
+
+        const wordBank = {
+            causes: "forget - rain - no time - drop - lose - no money - sleep late - break - no charge - run slow - cold weather - fight",
+            effects: "sad - cold - miss - tired - angry - can’t find - can’t write - feel sick - late - heavy - wet - cry"
+        };
 
         let timer;
         let timeLeft = 60;
-        let gameActive = false;
 
         function getRandomProblem() {
             const randomIndex = Math.floor(Math.random() * problems.length);
@@ -103,7 +129,7 @@
         function updateTimer() {
             if (timeLeft > 0) {
                 timeLeft--;
-                document.getElementById('timer').textContent = `Time: ${timeLeft}`;
+                document.getElementById('timer').textContent = `Time: ${timeLeft} ⏰`;
             } else {
                 clearInterval(timer);
                 triggerExplosion();
@@ -111,7 +137,7 @@
         }
 
         function triggerExplosion() {
-            gameActive = false;
+            console.log("Explosion triggered!");
             const explosionDiv = document.getElementById('explosion');
             const body = document.body;
             const boomSound = document.getElementById('boomSound');
@@ -120,31 +146,48 @@
             boomSound.play().catch(error => console.log("Audio play failed:", error));
             document.getElementById('problem').style.display = 'none';
             document.getElementById('timer').style.display = 'none';
+            document.getElementById('wordBank').style.display = 'none';
         }
 
         function dismissExplosion() {
+            console.log("Dismissing explosion");
             const explosionDiv = document.getElementById('explosion');
             const body = document.body;
             explosionDiv.style.display = 'none';
             body.classList.remove('explosion-effect');
             document.getElementById('problem').style.display = 'block';
             document.getElementById('timer').style.display = 'block';
+            document.getElementById('wordBank').style.display = 'block';
             startGame();
         }
 
         function startGame() {
-            if (!gameActive) {
-                clearInterval(timer);
-                timeLeft = 60;
-                document.getElementById('problem').textContent = getRandomProblem();
-                document.getElementById('timer').textContent = `Time: ${timeLeft}`;
-                document.getElementById('explosion').style.display = 'none';
-                document.getElementById('problem').style.display = 'block';
-                document.getElementById('timer').style.display = 'block';
-                timer = setInterval(updateTimer, 1000);
-                gameActive = true;
-            }
+            console.log("Starting new game round");
+            clearInterval(timer);
+            timeLeft = 60;
+            const problem = getRandomProblem();
+            document.getElementById('problem').textContent = `${problem.text} ${problem.emoji}`;
+            document.getElementById('wordBank').innerHTML = `
+                <div class="causes">${wordBank.causes}</div>
+                <div class="effects">${wordBank.effects}</div>
+            `;
+            document.getElementById('timer').textContent = `Time: ${timeLeft} ⏰`;
+            document.getElementById('explosion').style.display = 'none';
+            document.getElementById('problem').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            document.getElementById('wordBank').style.display = 'block';
+            timer = setInterval(updateTimer, 1000);
         }
+
+        // Add event listeners
+        document.getElementById('startButton').addEventListener('click', () => {
+            console.log("Start button clicked");
+            startGame();
+        });
+        document.getElementById('continueButton').addEventListener('click', () => {
+            console.log("Continue button clicked");
+            dismissExplosion();
+        });
     </script>
 </body>
 </html>
