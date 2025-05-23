@@ -99,24 +99,19 @@
 
     <script>
         const problems = [
-            { text: "My problem is I'm hungry.", emoji: "🍽️" },
-            { text: "My problem is I'm late for school.", emoji: "🏫" },
-            { text: "My problem is my pencil is broken.", emoji: "✏️" },
-            { text: "My problem is my room is messy.", emoji: "🧹" },
-            { text: "My problem is I lost my book.", emoji: "📚" },
-            { text: "My problem is I'm tired.", emoji: "😴" },
-            { text: "My problem is my bag is heavy.", emoji: "🎒" },
-            { text: "My problem is my phone is dead.", emoji: "📱" },
-            { text: "My problem is I forgot my homework.", emoji: "📝" },
-            { text: "My problem is my shoes are wet.", emoji: "👟" },
-            { text: "My problem is I’m cold.", emoji: "🥶" },
-            { text: "My problem is my friend is sad.", emoji: "😢" }
+            { text: "My problem is I'm hungry.", emoji: "🍽️", causes: "no food - forgot lunch - no money - late breakfast", effects: "sad - tired - angry - feel sick" },
+            { text: "My problem is I'm late for school.", emoji: "🏫", causes: "no bus - run slow - sleep late - no alarm", effects: "miss class - angry teacher - sad - no homework" },
+            { text: "My problem is my pencil is broken.", emoji: "✏️", causes: "drop it - old pencil - no sharpener", effects: "can’t write - sad - miss work - angry" },
+            { text: "My problem is my room is messy.", emoji: "🧹", causes: "no time - play a lot - forget clean - drop things", effects: "can’t find - sad - angry - tired" },
+            { text: "My problem is I lost my book.", emoji: "📚", causes: "forget it - drop it - left in class - no bag", effects: "can’t read - sad - angry - miss homework" },
+            { text: "My problem is I'm tired.", emoji: "😴", causes: "sleep late - no rest - play a lot - long day", effects: "sad - can’t work - angry - fall asleep" },
+            { text: "My problem is my bag is heavy.", emoji: "🎒", causes: "many books - no space - carry toys - big lunch", effects: "tired - slow walk - back hurts - late" },
+            { text: "My problem is my phone is dead.", emoji: "📱", causes: "no charge - old battery - forget charger - use a lot", effects: "can’t call - sad - miss friends - angry" },
+            { text: "My problem is I forgot my homework.", emoji: "📝", causes: "no time - forget bag - play a lot - sleep late", effects: "angry teacher - sad - miss points - cry" },
+            { text: "My problem is my shoes are wet.", emoji: "👟", causes: "rain - step in water - no boots - hole in shoe", effects: "cold - sad - feel sick - slow walk" },
+            { text: "My problem is I’m cold.", emoji: "🥶", causes: "cold weather - no jacket - rain - open window", effects: "feel sick - sad - tired - cry" },
+            { text: "My problem is my friend is sad.", emoji: "😢", causes: "fight - lose toy - bad day - no friends", effects: "I’m sad - no play - angry - cry" }
         ];
-
-        const wordBank = {
-            causes: "forget - rain - no time - drop - lose - no money - sleep late - break - no charge - run slow - cold weather - fight",
-            effects: "sad - cold - miss - tired - angry - can’t find - can’t write - feel sick - late - heavy - wet - cry"
-        };
 
         let timer;
         let timeLeft = 60;
@@ -168,8 +163,8 @@
             const problem = getRandomProblem();
             document.getElementById('problem').textContent = `${problem.text} ${problem.emoji}`;
             document.getElementById('wordBank').innerHTML = `
-                <div class="causes">${wordBank.causes}</div>
-                <div class="effects">${wordBank.effects}</div>
+                <div class="causes">${problem.causes}</div>
+                <div class="effects">${problem.effects}</div>
             `;
             document.getElementById('timer').textContent = `Time: ${timeLeft} ⏰`;
             document.getElementById('explosion').style.display = 'none';
