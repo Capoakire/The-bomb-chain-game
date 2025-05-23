@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem-Cause-Effect Chain Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        #problem {
+            font-size: 2em;
+            color: #0066cc;
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #timer {
+            font-size: 1.5em;
+            color: #cc0000;
+            margin: 10px;
+        }
+        #explosion {
+            font-size: 3em;
+            color: #ff0000;
+            display: none;
+            margin: 20px;
+        }
+        button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #instructions {
+            font-size: 1.2em;
+            color: #333;
+            margin: 20px;
+        }
+        .explosion-effect {
+            background-color: #ff3333 !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Problem-Cause-Effect Game</h1>
+    <div id="instructions">
+        Write a cause and effect for the problem before the timer hits 0 or BOOM! 💣
+    </div>
+    <div id="problem">Click "New Problem" to start!</div>
+    <div id="timer">Time: 60</div>
+    <div id="explosion">BOOM! Time’s Up! 💣</div>
+    <button onclick="startGame()">New Problem</button>
+
+    <script>
+        const problems = [
+            "My problem is I'm hungry.",
+            "My problem is I'm late for school.",
+            "My problem is my pencil is broken.",
+            "My problem is my room is messy.",
+            "My problem is I lost my book.",
+            "My problem is I'm tired.",
+            "My problem is my bag is heavy.",
+            "My problem is my phone is dead.",
+            "My problem is I forgot my homework.",
+            "My problem is my shoes are wet.",
+            "My problem is I’m cold.",
+            "My problem is my friend is sad."
+        ];
+
+        let timer;
+        let timeLeft = 60;
+
+        function getRandomProblem() {
+            const randomIndex = Math.floor(Math.random() * problems.length);
+            return problems[randomIndex];
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById('timer').textContent = `Time: ${timeLeft}`;
+            } else {
+                clearInterval(timer);
+                triggerExplosion();
+            }
+        }
+
+        function triggerExplosion() {
+            const explosionDiv = document.getElementById('explosion');
+            const body = document.body;
+            explosionDiv.style.display = 'block';
+            body.classList.add('explosion-effect');
+            setTimeout(() => {
+                explosionDiv.style.display = 'none';
+                body.classList.remove('explosion-effect');
+                startGame(); // Start new round after explosion
+            }, 1000); // Show explosion for 1 second
+        }
+
+        function startGame() {
+            clearInterval(timer); // Clear any existing timer
+            timeLeft = 60; // Reset timer
+            document.getElementById('problem').textContent = getRandomProblem();
+            document.getElementById('timer').textContent = `Time: ${timeLeft}`;
+            document.getElementById('explosion').style.display = 'none';
+            timer = setInterval(updateTimer, 1000);
+        }
+    </script>
+</body>
+</html>
