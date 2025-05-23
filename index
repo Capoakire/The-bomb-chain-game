@@ -49,6 +49,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 10px;
         }
         button:hover {
             background-color: #218838;
@@ -70,8 +71,9 @@
     </div>
     <div id="problem">Click "New Problem" to start!</div>
     <div id="timer">Time: 60</div>
-    <div id="explosion">BOOM! Time’s Up! 💣</div>
+    <div id="explosion">BOOM! Time’s Up! 💣<br><button onclick="dismissExplosion()">Continue</button></div>
     <button onclick="startGame()">New Problem</button>
+    <audio id="boomSound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_6b7a4e6e3f.mp3" preload="auto"></audio>
 
     <script>
         const problems = [
@@ -91,6 +93,7 @@
 
         let timer;
         let timeLeft = 60;
+        let gameActive = false;
 
         function getRandomProblem() {
             const randomIndex = Math.floor(Math.random() * problems.length);
@@ -108,24 +111,39 @@
         }
 
         function triggerExplosion() {
+            gameActive = false;
             const explosionDiv = document.getElementById('explosion');
             const body = document.body;
+            const boomSound = document.getElementById('boomSound');
             explosionDiv.style.display = 'block';
             body.classList.add('explosion-effect');
-            setTimeout(() => {
-                explosionDiv.style.display = 'none';
-                body.classList.remove('explosion-effect');
-                startGame(); // Start new round after explosion
-            }, 1000); // Show explosion for 1 second
+            boomSound.play().catch(error => console.log("Audio play failed:", error));
+            document.getElementById('problem').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+        }
+
+        function dismissExplosion() {
+            const explosionDiv = document.getElementById('explosion');
+            const body = document.body;
+            explosionDiv.style.display = 'none';
+            body.classList.remove('explosion-effect');
+            document.getElementById('problem').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            startGame();
         }
 
         function startGame() {
-            clearInterval(timer); // Clear any existing timer
-            timeLeft = 60; // Reset timer
-            document.getElementById('problem').textContent = getRandomProblem();
-            document.getElementById('timer').textContent = `Time: ${timeLeft}`;
-            document.getElementById('explosion').style.display = 'none';
-            timer = setInterval(updateTimer, 1000);
+            if (!gameActive) {
+                clearInterval(timer);
+                timeLeft = 60;
+                document.getElementById('problem').textContent = getRandomProblem();
+                document.getElementById('timer').textContent = `Time: ${timeLeft}`;
+                document.getElementById('explosion').style.display = 'none';
+                document.getElementById('problem').style.display = 'block';
+                document.getElementById('timer').style.display = 'block';
+                timer = setInterval(updateTimer, 1000);
+                gameActive = true;
+            }
         }
     </script>
 </body>
